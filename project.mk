@@ -132,7 +132,7 @@ downgrade:
 
 # Runs the service
 run: dev-generate
-	./rel/$(DEFAULT_TARGET_DIR)/bin/$(SERVICE_NAME) console -s sync
+	/bin/bash ./rel/$(DEFAULT_TARGET_DIR)/bin/$(SERVICE_NAME) console -s sync
 
 run-no-sync: dev-generate
 	./rel/$(DEFAULT_TARGET_DIR)/bin/$(SERVICE_NAME) console
