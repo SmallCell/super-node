@@ -1,0 +1,9 @@
+.eunit
+/deps
+*.beam
+*.rpm
+erl_crash.dump
+*~
+rel/super_node*
+rel/reltool.config
+rel/usr
