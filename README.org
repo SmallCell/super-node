@@ -1,0 +1,141 @@
+# -*- org-confirm-babel-evaluate: nil -*-
+#+TITLE: Common Test Umbrella
+#+CATEGORY: SmallCells
+
+* End-to-End Scenario
+** Subscriber-initiated Attach (initial) Call Flow Description
+   http://www.cisco.com/c/dam/en/us/td/docs/wireless/asr_5000/17-0/PDF/17-MME-Admin.pdf
+   Step Description
+   1. The UE initiates the Attach procedure by the transmission of an
+      Attach Request (IMSI or old GUTI, last visited TAI (if
+      available), UE Network Capability, PDN Address Allocation,
+      Protocol Configuration Options, Attach Type) message together
+      with an indication of the Selected Network to the eNodeB. IMSI
+      is included if the UE does not have a valid GUTI available. If
+      the UE has a valid GUTI, it is included.
+   2. The eNodeB derives the MME from the GUTI and from the indicated
+      Selected Network. If that MME is not associated with the eNodeB,
+      the eNodeB selects an MME using an “MME selection function”. The
+      eNodeB forwards the Attach Request message to the new MME
+      contained in a S1-MME control message (Initial UE message)
+      together with the Selected Network and an indication of the
+      E-UTRAN Area identity, a globally unique E-UTRAN ID of the cell
+      from where it received the message to the new MME.
+   3. If the UE is unknown in the MME, the MME sends an Identity
+      Request to the UE to request the IMSI.
+   4. The UE responds with Identity Response (IMSI).
+   5. If no UE context for the UE exists anywhere in the network,
+      authentication is mandatory. Otherwise this step is optional.
+      However, at least integrity checking is started and the ME
+      Identity is retrieved from the UE at Initial Attach. The
+      authentication functions, if performed this step, involves AKA
+      authentication and establishment of a NAS level security
+      association with the UE in order to protect further NAS protocol
+      messages.
+   6. The MME sends an Update Location Request (MME Identity, IMSI, ME
+      Identity) to the HSS.
+   7. The HSS acknowledges the Update Location message by sending an
+      Update Location Ack to the MME. This message also contains the
+      Insert Subscriber Data (IMSI, Subscription Data) Request. The
+      Subscription Data contains the list of all APNs that the UE is
+      permitted to access, an indication about which of those APNs is
+      the Default APN, and the 'EPS subscribed QoS profile' for each
+      permitted APN. If the Update Location is rejected by the HSS,
+      the MME rejects the Attach Request from the UE with an
+      appropriate cause.
+   8. The MME selects an S-GW using “Serving GW selection function”
+      and allocates an EPS Bearer Identity for the Default Bearer
+      associated with the UE. If the PDN subscription context contains
+      no P-GW address the MME selects a P-GW as described in clause
+      “PDN GW selection function”. Then it sends a Create Default
+      Bearer Request (IMSI, MME Context ID, APN, RAT type, Default
+      Bearer QoS, PDN Address Allocation, AMBR, EPS Bearer Identity,
+      Protocol Configuration Options, ME Identity, User Location
+      Information) message to the selected S-GW.
+   9. The S-GW creates a new entry in its EPS Bearer table and sends a
+      Create Default Bearer Request (IMSI, APN, S-GW Address for the
+      user plane, S-GW TEID of the user plane, S-GW TEID of the
+      control plane, RAT type, Default Bearer QoS, PDN Address
+      Allocation, AMBR, EPS Bearer Identity, Protocol Configuration
+      Options, ME Identity, User Location Information) message to the
+      P-GW.
+   10. If dynamic PCC is deployed, the P-GW interacts with the PCRF to
+       get the default PCC rules for the UE. The IMSI, UE IP address,
+       User Location Information, RAT type, AMBR are provided to the
+       PCRF by the P-GW if received by the previous message.
+   11. The P-GW returns a Create Default Bearer Response (P-GW Address
+       for the user plane, P-GW TEID of the user plane, P-GW TEID of
+       the control plane, PDN Address Information, EPS Bearer
+       Identity, Protocol Configuration Options) message to the
+       S-GW. PDN Address Information is included if the P-GW allocated
+       a PDN address Based on PDN Address Allocation received in the
+       Create Default Bearer Request. PDN Address Information contains
+       an IPv4 address for IPv4 and/or an IPv6 prefix and an Interface
+       Identifier for IPv6. The P-GW takes into account the UE IP
+       version capability indicated in the PDN Address Allocation and
+       the policies of operator when the P-GW allocates the PDN
+       Address Information. Whether the IP address is negotiated by
+       the UE after completion of the Attach procedure, this is
+       indicated in the Create Default Bearer Response.
+   12. The Downlink (DL) Data can start flowing towards S-GW. The S-GW
+       buffers the data.
+   13. The S-GW returns a Create Default Bearer Response (PDN Address
+       Information, S-GW address for User Plane, S-GW TEID for User
+       Plane, S-GW Context ID, EPS Bearer Identity, Protocol
+       Configuration Options) message to the new MME. PDN Address
+       Information is included if it was provided by the P-GW.
+   14. The new MME sends an Attach Accept (APN, GUTI, PDN Address
+       Information, TAI List, EPS Bearer Identity, Session Management
+       Configuration IE, Protocol Configuration Options) message to
+       the eNodeB.
+   15. The eNodeB sends Radio Bearer Establishment Request including
+       the EPS Radio Bearer Identity to the UE. The Attach Accept
+       message is also sent along to the UE.
+   16. The UE sends the Radio Bearer Establishment Response to the
+       eNodeB. In this message, the Attach Complete message (EPS
+       Bearer Identity) is included.
+   17. The eNodeB forwards the Attach Complete (EPS Bearer Identity)
+       message to the MME.
+   18. The Attach is complete and UE sends data over the default
+       bearer. At this time the UE can send uplink packets towards the
+       eNodeB which are then tunnelled to the S-GW and P-GW.
+   19. The MME sends an Update Bearer Request (eNodeB address, eNodeB
+       TEID) message to the S-GW.
+   20. The S-GW acknowledges by sending Update Bearer Response (EPS
+       Bearer Identity) message to the MME.
+   21. The S-GW sends its buffered downlink packets.
+   22. After the MME receives Update Bearer Response (EPS Bearer
+       Identity) message, if an EPS bearer was established and the
+       subscription data indicates that the user is allowed to perform
+       handover to non-3GPP accesses, and if the MME selected a P-GW
+       that is different from the P-GW address which was indicated by
+       the HSS in the PDN subscription context, the MME sends an
+       Update Location Request including the APN and P-GW address to
+       the HSS for mobility with non-3GPP accesses.
+   23. The HSS stores the APN and P-GW address pair and sends an
+       Update Location Response to the MME.
+   24. Bidirectional data is passed between the UE and PDN.
+
+
+* General information on release
+  - Generate by example (http://www.echorussia.ru/erlang-releases.html)
+  - Basic development workflow (https://github.com/EchoTeam/rebar-templates/blob/master/service/DEV.md)
+  - Makefile targets (https://github.com/EchoTeam/rebar-templates/blob/master/service/MAKE.md)
+  - Working with deps (https://github.com/EchoTeam/rebar-templates/blob/master/service/DEPS.md)
+
+* org-config                                                        :ARCHIVE:
+#+STARTUP: content hidestars logdone
+#+TAGS: DOCS(d) CODING(c) TESTING(t) PLANING(p)
+#+LINK_UP: sitemap.html
+#+LINK_HOME: main.html
+#+COMMENT: toc:nil
+#+OPTIONS: ^:nil
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+DESCRIPTION: Augment design process with system property discovering aid.
+#+KEYWORDS: SmallCell,
+#+LANGUAGE: en
+#+PROPERTY: Effort_ALL  1:00 2:00 4:00 6:00 8:00 12:00
+#+COLUMNS: %38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM{Total}
+
+#+STYLE: <link rel="stylesheet" type="text/css" href="org-manual.css" />
