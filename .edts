@@ -1,6 +1,7 @@
 :name "super-node"
 :node-sname "super-node"
-:lib-dirs '("apps" "deps" "scripts")
+:lib-dirs '("deps" "scripts")
 :app-include-dirs '("include")
 :erlang-cookie "marvel"
 :otp-path "/local/tools/R17B01/"
+:start-command "erl -sname super-node -pa deps/corman/ebin/ deps/echo_rebar_plugins/ebin/ deps/goldrush/ebin/ deps/lager/ebin/ deps/lager_syslog/ebin/ deps/mme_node/ebin/ deps/rebar_lock_deps_plugin/ebin/ deps/sync/ebin/ deps/syslog/ebin/ -boot start_sasl"
