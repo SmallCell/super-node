@@ -1,0 +1,19 @@
+{application, lte,
+ [
+  {description, "LTE agregate for NE nodes"},
+  {vsn, "1.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  sasl,
+                  lager,
+                  mme_node,
+                  sgw_node,
+                  pgw_node,
+                  enb_node,
+                  ue_node
+                 ]},
+  {mod, { lte, []}},
+  {env, []}
+ ]}.
