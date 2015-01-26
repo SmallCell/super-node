@@ -11,6 +11,7 @@
                   mme_node,
                   sgw_node,
                   pgw_node,
+                  hss_node,
                   enb_node,
                   ue_node
                  ]},

@@ -1,8 +1,12 @@
+%% Local Variables:
+%% mode: erlang
+%% End:
+
 {sys,[{lib_dirs,["../deps", "../apps"]},
       {erts,[{mod_cond,derived},{app_file,strip}]},
       {app_file,strip},
       {rel,"super_node","RELVSN",
-           [kernel,sasl,stdlib,lager,mme_node,sgw_node,pgw_node,enb_node,ue_node,lte,corman]},
+           [kernel,sasl,stdlib,lager,mme_node,sgw_node,pgw_node,hss_node,enb_node,ue_node,lte]},
       {rel,"start_clean",[],[kernel,stdlib]},
       {boot_rel,"super_node"},
       {profile,embedded},
@@ -13,14 +17,14 @@
       {excl_app_filters,[".gitignore"]},
       {app,sync,[{mod_cond,app},{incl_cond,include}]},
       {app,lager,[{mod_cond,app},{incl_cond,include}]},
-      {app,lager_syslog,[{mod_cond,app},{incl_cond,include}]},
       {app,mme_node,[{mod_cond,app},{incl_cond,include}]},
       {app,sgw_node,[{mod_cond,app},{incl_cond,include}]},
       {app,pgw_node,[{mod_cond,app},{incl_cond,include}]},
       {app,enb_node,[{mod_cond,app},{incl_cond,include}]},
       {app,ue_node,[{mod_cond,app},{incl_cond,include}]},
       {app,lte,[{mod_cond,app},{incl_cond,include}]},
-      {app,corman,[{mod_cond,app},{incl_cond,include}]}]}.
+      {app,hss_node,[{mod_cond,app},{incl_cond,include}]}
+      ]}.
 {target_dir,"super_node"}.
 {overlay,[{mkdir,"log"},
           {mkdir,"etc"},
