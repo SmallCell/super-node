@@ -2,7 +2,7 @@
       {erts,[{mod_cond,derived},{app_file,strip}]},
       {app_file,strip},
       {rel,"super_node","RELVSN",
-           [kernel,sasl,stdlib,lager,mme_node,mme_node,sgw_node,pgw_node,enb_node,ue_node,lte,corman]},
+           [kernel,sasl,stdlib,lager,mme_node,sgw_node,pgw_node,enb_node,ue_node,lte,corman]},
       {rel,"start_clean",[],[kernel,stdlib]},
       {boot_rel,"super_node"},
       {profile,embedded},
