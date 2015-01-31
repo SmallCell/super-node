@@ -7,3 +7,6 @@ erl_crash.dump
 rel/super_node*
 rel/reltool.config
 rel/usr
+ebin/
+log/
+rebar.lock

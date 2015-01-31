@@ -10,8 +10,12 @@
 -export([config/0, config/1, config/2,
          start/0, a_start/2]).
 
+ -include_lib("lte_model/include/node_logger.hrl").
 
--include_lib("lte_model/include/node_logger.hrl").
+-define(TEST,true).
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-endif.
 
 
 %%%===================================================================
@@ -49,6 +53,7 @@ stop(_State) ->
     ok.
 
 start_phase(listen, _Type, _Args) ->
+    ?INFO("Start LTE phase: listen"),
     %% Dispatch = [{'_', [
     %%                    {'_', ef_http_handler, []}
     %%                   ]}
@@ -74,3 +79,24 @@ start_ok(App, Type, {error, {not_started, Dep}}) ->
     a_start(App, Type);
 start_ok(App, _Type, {error, Reason}) ->
     erlang:error({app_start_failed, App, Reason}).
+
+%% ------------------------------------------------------------------
+%% Internal Function Definitions
+%% ------------------------------------------------------------------
+
+encode_mac_pdu(UeId, Rnti, PDU) ->
+    <<UeId:32/integer, Rnti:32/integer, PDU/bitstring>>.
+
+decode_mac_pdu(Data) -> 
+    <<UeId:32/integer, Rnti:32/integer, PDU/bitstring>> = Data,
+    {UeId, Rnti, PDU}.
+
+-ifdef(TEST).
+mac_pdu_test() ->
+    UeId=42, Rnti=103, PDU= <<"Hello">>,
+    Data = encode_mac_pdu(UeId, Rnti, PDU),
+    {UeId1, Rnti1, PDU} = decode_mac_pdu(Data),
+    ?assertEqual(UeId, UeId1),
+    ?assertEqual(Rnti, Rnti1).
+    
+-endif.
